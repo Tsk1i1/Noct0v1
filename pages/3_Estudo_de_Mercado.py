@@ -8,15 +8,27 @@ import streamlit as st
 # Permite importar utils/ quando a página roda dentro de pages/
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 from utils.data_loader import carregar_dados, tecnologias_mais_frequentes  # noqa: E402
-from utils.theme import aplicar_tema  # noqa: E402
+from utils.theme import aplicar_tema, cores_atuais  # noqa: E402
 
 st.set_page_config(page_title="Estudo de Mercado", page_icon="📊", layout="wide")
 
 aplicar_tema()
 
-# Os gráficos plotly têm fundo próprio (branco por padrão) e não seguem o
-# CSS injetado — por isso trocamos o template deles conforme o tema escolhido.
-TEMPLATE_GRAFICO = "plotly_dark" if st.session_state.get("tema") == "Escuro" else "plotly_white"
+CORES = cores_atuais()
+
+
+def estilizar(fig):
+    """Aplica as cores do tema atual a uma figura Plotly (fundo, texto, grade)."""
+    fig.update_layout(
+        paper_bgcolor=CORES["fundo"],
+        plot_bgcolor=CORES["fundo"],
+        font_color=CORES["texto"],
+        legend_font_color=CORES["texto"],
+    )
+    fig.update_xaxes(gridcolor=CORES["grade"], zerolinecolor=CORES["grade"])
+    fig.update_yaxes(gridcolor=CORES["grade"], zerolinecolor=CORES["grade"])
+    return fig
+
 
 st.title("📊 Estudo de Mercado — Vagas de Estágio em TI")
 st.caption(
@@ -71,11 +83,10 @@ with col_b:
             freq_tec.sort_values(ascending=True),
             orientation="h",
             labels={"value": "Nº de vagas", "index": "Tecnologia"},
-            title=None,
-            template=TEMPLATE_GRAFICO,
+            title=None
         )
         fig_tec.update_layout(showlegend=False, yaxis_title="", xaxis_title="Nº de vagas")
-        st.plotly_chart(fig_tec, use_container_width=True)
+        st.plotly_chart(estilizar(fig_tec), use_container_width=True)
     else:
         st.info("Nenhuma tecnologia registrada para o filtro selecionado.")
 
@@ -97,10 +108,9 @@ col_c, col_d = st.columns(2)
 with col_c:
     dist_tipo = df_filtrado["Tipo de Trabalho"].value_counts()
     fig_tipo = px.pie(
-        values=dist_tipo.values, names=dist_tipo.index, hole=0.4,
-        template=TEMPLATE_GRAFICO,
+        values=dist_tipo.values, names=dist_tipo.index, hole=0.4
     )
-    st.plotly_chart(fig_tipo, use_container_width=True)
+    st.plotly_chart(estilizar(fig_tipo), use_container_width=True)
 
 with col_d:
     if "Interessante" in df_filtrado.columns:
@@ -112,9 +122,9 @@ with col_d:
         cross["Interessante"] = cross["Interessante"].map({True: "Sim", False: "Não"})
         fig_cross = px.bar(
             cross, x="Tipo de Trabalho", y="Vagas", color="Interessante",
-            barmode="group", template=TEMPLATE_GRAFICO,
+            barmode="group"
         )
-        st.plotly_chart(fig_cross, use_container_width=True)
+        st.plotly_chart(estilizar(fig_cross), use_container_width=True)
 
 st.markdown(
     """
@@ -131,9 +141,9 @@ st.subheader("3. Quando uma vaga não me interessa, por quê?")
 if "Justificativa" in df_filtrado.columns:
     justificativas = df_filtrado["Justificativa"].dropna()
     if not justificativas.empty:
-        fig_just = px.bar(justificativas.value_counts(), template=TEMPLATE_GRAFICO)
+        fig_just = px.bar(justificativas.value_counts())
         fig_just.update_layout(showlegend=False, xaxis_title="Motivo", yaxis_title="Nº de vagas")
-        st.plotly_chart(fig_just, use_container_width=True)
+        st.plotly_chart(estilizar(fig_just), use_container_width=True)
     else:
         st.info("Nenhuma justificativa registrada para o filtro selecionado.")
 
@@ -151,11 +161,10 @@ st.markdown("---")
 st.subheader("4. De quais nichos são as vagas encontradas?")
 dist_nicho = df_filtrado["Nicho de Mercado"].value_counts()
 fig_nicho = px.bar(
-    dist_nicho, labels={"value": "Nº de vagas", "index": "Nicho"},
-    template=TEMPLATE_GRAFICO,
+    dist_nicho, labels={"value": "Nº de vagas", "index": "Nicho"}
 )
 fig_nicho.update_layout(showlegend=False, xaxis_title="Nicho de mercado", yaxis_title="Nº de vagas")
-st.plotly_chart(fig_nicho, use_container_width=True)
+st.plotly_chart(estilizar(fig_nicho), use_container_width=True)
 
 st.markdown("---")
 
