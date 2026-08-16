@@ -13,7 +13,8 @@ dashboard-estagio-ti/
 │   ├── 2_🛠️_Skills.py           # Aba "Skills"
 │   └── 3_📊_Estudo_de_Mercado.py # Aba "Estudo de Mercado"
 ├── utils/
-│   └── data_loader.py           # Carregamento e limpeza da base de dados
+│   ├── data_loader.py           # Carregamento e limpeza da base de dados
+│   └── theme.py                 # Alternância de tema claro/escuro
 ├── data/
 │   └── vagas_estagio_ti.xlsx    # Base de dados (vagas de estágio em TI)
 ├── assets/
@@ -42,6 +43,14 @@ streamlit run app.py
    (ex: `https://seu-app.streamlit.app`) — esse é o link a entregar.
 5. Qualquer novo `git push` para o repositório atualiza o app publicado
    automaticamente.
+
+## Tema claro/escuro
+
+Cada página tem um seletor "🎨 Tema" no topo da sidebar. A escolha fica salva
+em `st.session_state` e vale para todas as abas durante a sessão do usuário
+(assim que ele muda de página, o tema é mantido). A implementação está toda
+centralizada em `utils/theme.py` — para ajustar as cores, edite os dicionários
+`CORES_CLARO` e `CORES_ESCURO` nesse arquivo.
 
 ## Próximos passos de conteúdo
 
