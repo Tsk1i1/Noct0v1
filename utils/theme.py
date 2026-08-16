@@ -84,10 +84,28 @@ def aplicar_tema():
         section[data-testid="stSidebar"] * {{
             color: {cores['texto']} !important;
         }}
+        /* O Streamlit reduz a opacidade de rótulos de widget e legendas por
+           padrão (efeito sutil pensado pro tema claro) — no fundo escuro
+           isso fica ilegível, então forçamos opacidade total aqui. */
+        section[data-testid="stSidebar"] [data-testid="stWidgetLabel"] p,
+        section[data-testid="stSidebar"] [data-testid="stWidgetLabel"] label,
+        section[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p,
+        section[data-testid="stSidebar"] h1,
+        section[data-testid="stSidebar"] h2,
+        section[data-testid="stSidebar"] h3,
+        section[data-testid="stSidebar"] label {{
+            color: {cores['texto']} !important;
+            opacity: 1 !important;
+        }}
 
         /* ---- Textos genéricos ---- */
         h1, h2, h3, h4, h5, h6, p, span, label, li, div {{
             color: {cores['texto']};
+        }}
+        [data-testid="stWidgetLabel"] p,
+        [data-testid="stWidgetLabel"] label {{
+            color: {cores['texto']} !important;
+            opacity: 1 !important;
         }}
         [data-testid="stMetricValue"], [data-testid="stMetricLabel"] {{
             color: {cores['texto']} !important;
