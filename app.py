@@ -6,10 +6,10 @@ st.set_page_config(
     page_icon="👋",
     layout="wide",
 )
-'
+
 # ---------- Sidebar ----------
 with st.sidebar:
-    st.title("Seu Nome Aqui")'
+    st.title("Seu Nome Aqui")
     st.caption("Estudante de Análise e Desenvolvimento de Sistemas")
     st.markdown("---")
     st.markdown("📧 seuemail@email.com")
