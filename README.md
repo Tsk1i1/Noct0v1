@@ -46,11 +46,22 @@ streamlit run app.py
 
 ## Tema claro/escuro
 
-Cada página tem um seletor "🎨 Tema" no topo da sidebar. A escolha fica salva
-em `st.session_state` e vale para todas as abas durante a sessão do usuário
-(assim que ele muda de página, o tema é mantido). A implementação está toda
-centralizada em `utils/theme.py` — para ajustar as cores, edite os dicionários
-`CORES_CLARO` e `CORES_ESCURO` nesse arquivo.
+O tema agora é controlado pelo **alternador nativo do Streamlit**: clique no
+menu **⋮** (canto superior direito) → **Settings** → **Theme** → escolha
+"Dark". Isso reconfigura corretamente todos os componentes (sidebar, botões,
+dropdowns, menus) de uma vez, sem precisar de CSS customizado.
+
+Uma versão anterior tentava forçar o tema escuro via CSS injetado por cima
+de um app configurado como claro no `config.toml` — isso deixava alguns
+componentes internos do Streamlit (o conteúdo de dropdowns/menus, que pegam
+cor direto do tema interno, não do CSS da página) sem estilo correto. A
+correção foi parar de travar `backgroundColor`/`textColor` no
+`.streamlit/config.toml`, o que libera o alternador nativo — daí ele cuida
+de tudo automaticamente, sem exceções.
+
+`utils/theme.py` ainda existe, mas só pra detectar se o tema nativo ativo é
+claro ou escuro (via `st.context.theme`) e colorir os gráficos Plotly da
+aba "Estudo de Mercado" de forma compatível.
 
 ## Próximos passos de conteúdo
 

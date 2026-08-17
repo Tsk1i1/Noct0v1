@@ -1,14 +1,6 @@
-import sys
-from pathlib import Path
-
 import streamlit as st
 
-sys.path.append(str(Path(__file__).resolve().parent.parent))
-from utils.theme import aplicar_tema  # noqa: E402
-
 st.set_page_config(page_title="Skills", page_icon="🛠️", layout="wide")
-
-aplicar_tema()
 
 st.title("🛠️ Skills")
 st.caption("Competências técnicas, ferramentas, idiomas e soft skills.")

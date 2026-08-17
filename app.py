@@ -1,14 +1,11 @@
 import streamlit as st
 from pathlib import Path
-from utils.theme import aplicar_tema
 
 st.set_page_config(
     page_title="Portfólio | Quem sou eu",
     page_icon="👋",
     layout="wide",
 )
-
-aplicar_tema()
 
 # ---------- Sidebar ----------
 with st.sidebar:
@@ -18,6 +15,9 @@ with st.sidebar:
     st.markdown("📧 seuemail@email.com")
     st.markdown("🔗 [LinkedIn](https://linkedin.com/in/seu-usuario)")
     st.markdown("💻 [GitHub](https://github.com/seu-usuario)")
+    st.markdown("---")
+    st.caption("🎨 Prefere tema escuro? Use o menu **⋮** (canto superior "
+                "direito) → **Settings** → **Theme**.")
 
 # ---------- Conteúdo ----------
 col_foto, col_texto = st.columns([1, 2], gap="large")

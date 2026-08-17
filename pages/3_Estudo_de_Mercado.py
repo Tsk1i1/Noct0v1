@@ -8,11 +8,9 @@ import streamlit as st
 # Permite importar utils/ quando a página roda dentro de pages/
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 from utils.data_loader import carregar_dados, tecnologias_mais_frequentes  # noqa: E402
-from utils.theme import aplicar_tema, cores_atuais  # noqa: E402
+from utils.theme import cores_atuais  # noqa: E402
 
 st.set_page_config(page_title="Estudo de Mercado", page_icon="📊", layout="wide")
-
-aplicar_tema()
 
 CORES = cores_atuais()
 
