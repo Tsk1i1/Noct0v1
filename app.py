@@ -34,7 +34,9 @@ with col_texto:
     st.markdown(
         """
         Sou estudante de Engenharia de Software na FIAP e técnico em Administração pela ETEC Prof.ª Luzia Maria Machado. Meu perfil é naturalmente analítico — gosto de desmontar problemas complexos, entender suas partes e estruturar soluções que realmente façam sentido. Foi essa curiosidade que me levou, no TCC do técnico, a investigar como a Inteligência Artificial está transformando o meio empresarial e como os dados podem gerar decisões mais inteligentes.
+        
         No dia a dia, programo em Java e Python, e me interesso cada vez mais pelo lado estratégico da tecnologia: como modelar informações, organizar processos e usar dados para encontrar respostas que não são óbvias à primeira vista. Gosto de pensar em arquitetura e lógica, não só em escrever código.
+        
         Atualmente busco minha primeira oportunidade de estágio em Engenharia de Software, com interesse especial em tecnologia, inovação e áreas que envolvam análise de dados, resolução de problemas e estruturação de sistemas. Quero aplicar o que aprendo na faculdade em desafios reais e seguir evoluindo como alguém que constrói soluções com propósito.
 
         """
