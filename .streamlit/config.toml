@@ -1,13 +1,23 @@
 [theme]
-# Só a cor de destaque é fixa; NÃO definimos backgroundColor/textColor
-# aqui de propósito — isso é o que trava o app em modo claro e impede o
-# alternador de tema nativo do Streamlit de funcionar corretamente.
+# Definir [theme.light] e [theme.dark] separadamente (em vez de só cores
+# soltas aqui) é a forma documentada de dar ao Streamlit os dois temas
+# completos — é isso que faz o alternador aparecer no menu Settings com
+# as SUAS cores, em vez das genéricas do Streamlit.
 primaryColor = "#1a73e8"
 font = "sans serif"
 
+[theme.light]
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f0f4f9"
+textColor = "#202124"
+
+[theme.dark]
+backgroundColor = "#0e1117"
+secondaryBackgroundColor = "#1c1f26"
+textColor = "#f0f2f6"
+
 [client]
-# "viewer" esconde o menu de desenvolvedor (Rerun/Clear cache/Record screen)
-# mas MANTÉM o menu "Settings", que é onde fica o alternador de tema
-# claro/escuro oficial do Streamlit — ele reconfigura todos os componentes
-# nativos corretamente (inclusive dropdowns e menus), sem depender de CSS.
-toolbarMode = "viewer"
+# "auto" mostra as opções de desenvolvedor (Rerun/Clear cache) só pra quem
+# está logado como dono do app no Streamlit Cloud; qualquer outra pessoa
+# (inclusive quem for avaliar) vê o menu enxuto, mas com o Settings mantido.
+toolbarMode = "auto"
