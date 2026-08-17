@@ -9,12 +9,12 @@ st.set_page_config(
 
 # ---------- Sidebar ----------
 with st.sidebar:
-    st.title("Seu Nome Aqui")
-    st.caption("Estudante de Análise e Desenvolvimento de Sistemas")
+    st.title("Nicolas Mendes dos Santos")
+    st.caption("Estudante de Engenharia de Software")
     st.markdown("---")
-    st.markdown("📧 seuemail@email.com")
-    st.markdown("🔗 [LinkedIn](https://linkedin.com/in/seu-usuario)")
-    st.markdown("💻 [GitHub](https://github.com/seu-usuario)")
+    st.markdown("📧 nico12571@hotmail.com")
+    st.markdown("🔗 [LinkedIn](https://linkedin.com/in/tsuk1i1)")
+    st.markdown("💻 [GitHub](https://github.com/Tsk1i1)")
     st.markdown("---")
     st.caption("🎨 Prefere tema escuro? Use o menu **⋮** (canto superior "
                 "direito) → **Settings** → **Theme**.")
@@ -30,17 +30,13 @@ with col_foto:
         st.info("📷 Coloque sua foto em `assets/foto_perfil.jpg` para ela aparecer aqui.")
 
 with col_texto:
-    st.title("Olá, eu sou [Seu Nome] 👋")
+    st.title("Olá, eu sou Nicolas 👋")
     st.markdown(
         """
-        Sou estudante de **[seu curso]** na **[sua instituição]**, apaixonado(a)
-        por tecnologia e dados. Atualmente busco minha primeira oportunidade de
-        **estágio em TI**, com interesse especial em [ex: dados, desenvolvimento
-        de software, IA].
+        Sou estudante de Engenharia de Software na FIAP e técnico em Administração pela ETEC Prof.ª Luzia Maria Machado. Meu perfil é naturalmente analítico — gosto de desmontar problemas complexos, entender suas partes e estruturar soluções que realmente façam sentido. Foi essa curiosidade que me levou, no TCC do técnico, a investigar como a Inteligência Artificial está transformando o meio empresarial e como os dados podem gerar decisões mais inteligentes.
+        No dia a dia, programo em Java e Python, e me interesso cada vez mais pelo lado estratégico da tecnologia: como modelar informações, organizar processos e usar dados para encontrar respostas que não são óbvias à primeira vista. Gosto de pensar em arquitetura e lógica, não só em escrever código.
+        Atualmente busco minha primeira oportunidade de estágio em Engenharia de Software, com interesse especial em tecnologia, inovação e áreas que envolvam análise de dados, resolução de problemas e estruturação de sistemas. Quero aplicar o que aprendo na faculdade em desafios reais e seguir evoluindo como alguém que constrói soluções com propósito.
 
-        > Escreva aqui 2-3 parágrafos curtos contando: quem você é, o que te
-        > motiva na área de tecnologia, e o que você busca profissionalmente.
-        > Evite textos muito longos — recrutadores leem rápido.
         """
     )
 
