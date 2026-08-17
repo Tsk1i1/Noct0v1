@@ -26,6 +26,46 @@ def _normalizar_tecnologia(nome: str) -> str:
     return NORMALIZACAO_TECNOLOGIAS.get(chave, nome.strip())
 
 
+# Unifica justificativas de recusa que são a mesma coisa escrita de forma
+# diferente (ex: "Muito longe" vs "Muito Longe"), pra não fragmentar o
+# motivo real em categorias separadas no gráfico.
+NORMALIZACAO_JUSTIFICATIVA = {
+    "muito longe": "Muito longe",
+    "horário incompatível": "Horário incompatível",
+    "indisponibilidade de horario": "Horário incompatível",
+    "indisponibilidade de horário": "Horário incompatível",
+    "não tenho os conhecimentos necessarios.": "Não tenho os conhecimentos necessários",
+    "não tenho os conhecimentos necessários.": "Não tenho os conhecimentos necessários",
+    "não gosto de webdev.": "Não gosto da área",
+}
+
+
+def _normalizar_justificativa(texto: str) -> str:
+    if pd.isna(texto):
+        return texto
+    chave = str(texto).strip().lower()
+    return NORMALIZACAO_JUSTIFICATIVA.get(chave, str(texto).strip())
+
+
+def _normalizar_beneficio(nome: str) -> str:
+    """Agrupa grafias diferentes do mesmo benefício sob um nome único."""
+    chave = nome.strip().rstrip(".").strip().lower()
+    mapa = {
+        "vr": "Vale Refeição",
+        "va": "Vale Alimentação",
+        "vt": "Vale Transporte",
+        "plano de saúde": "Plano de Saúde",
+        "seguro de vida": "Seguro de Vida",
+        "wellhub": "Wellhub/Gympass",
+        "gympass": "Wellhub/Gympass",
+        "totalpass": "TotalPass",
+        "total pass": "TotalPass",
+        "bolsa auxilio": "Bolsa Auxílio",
+        "bolsa auxílio": "Bolsa Auxílio",
+    }
+    return mapa.get(chave, nome.strip().rstrip(".").strip())
+
+
 @st.cache_data
 def carregar_dados(caminho: str = CAMINHO_BASE) -> pd.DataFrame:
     """Lê a planilha bruta e devolve um DataFrame já tratado."""
@@ -81,6 +121,26 @@ def carregar_dados(caminho: str = CAMINHO_BASE) -> pd.DataFrame:
             )
         )
 
+    # Unifica justificativas de recusa que descrevem o mesmo motivo mas
+    # foram digitadas de forma diferente.
+    if "Justificativa" in df.columns:
+        df["Justificativa"] = df["Justificativa"].apply(_normalizar_justificativa)
+
+    # Quebra a coluna de benefícios (texto livre separado por vírgula) em
+    # lista, agrupando grafias diferentes do mesmo benefício.
+    if "Benefícios" in df.columns:
+        df["Beneficios_Lista"] = (
+            df["Benefícios"]
+            .fillna("")
+            .apply(
+                lambda x: [
+                    _normalizar_beneficio(b)
+                    for b in x.split(",")
+                    if b.strip() and b.strip().lower() != "nenhuma"
+                ]
+            )
+        )
+
     # Salário como número quando existir (facilita estatísticas descritivas)
     if "Salário" in df.columns:
         df["Salário"] = pd.to_numeric(df["Salário"], errors="coerce")
@@ -93,3 +153,23 @@ def tecnologias_mais_frequentes(df: pd.DataFrame, apenas_interessantes: bool = F
     base = df[df["Interessante"] == True] if apenas_interessantes else df
     todas = base["Tecnologias_Lista"].explode().dropna()
     return todas.value_counts()
+
+
+def beneficios_mais_frequentes(df: pd.DataFrame) -> pd.Series:
+    """Conta a frequência de cada benefício oferecido nas vagas."""
+    todos = df["Beneficios_Lista"].explode().dropna()
+    return todos.value_counts()
+
+
+def tecnologias_por_interesse(df: pd.DataFrame, top_n: int = 10) -> pd.DataFrame:
+    """
+    Compara a frequência de cada tecnologia entre vagas que interessam e
+    vagas que não interessam — ajuda a identificar se o que te interessa
+    pede um conjunto de tecnologias diferente do que não interessa.
+    """
+    freq_sim = tecnologias_mais_frequentes(df[df["Interessante"] == True])
+    freq_nao = tecnologias_mais_frequentes(df[df["Interessante"] == False])
+    comparativo = pd.DataFrame({"Interessa": freq_sim, "Não interessa": freq_nao}).fillna(0)
+    comparativo["Total"] = comparativo.sum(axis=1)
+    comparativo = comparativo.sort_values("Total", ascending=False).head(top_n).drop(columns="Total")
+    return comparativo.astype(int)
