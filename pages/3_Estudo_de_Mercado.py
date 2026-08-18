@@ -33,7 +33,7 @@ def estilizar(fig):
     return fig
 
 
-st.title("📊 Estudo de Mercado — Vagas de Estágio em TI")
+st.title("📊 Estudo de Mercado: Vagas de Estágio em TI")
 
 # ============================================================
 # INTRODUÇÃO
@@ -42,16 +42,16 @@ st.markdown(
     """
     ### Por que este tema
 
-    Escolhi analisar **vagas de estágio em Tecnologia da Informação** porque
-    é exatamente o que estou buscando agora — em vez de estudar um mercado
-    abstrato, decidi tratar minha própria busca de estágio como um problema
-    de dados. Cada vaga que encontrei durante a procura foi registrada
-    manualmente com as mesmas informações (tecnologias exigidas, tipo de
-    trabalho, benefícios, nicho da empresa e se a vaga me interessa ou não,
-    com o motivo). O resultado é uma base pequena, mas real e pessoal — que
-    eu posso usar pra guiar decisões concretas: em quais tecnologias focar
-    meus estudos, que tipo de vaga vale mais a pena buscar, e por que estou
-    recusando as vagas que recuso.
+    Escolhi analisar vagas de estágio em Tecnologia da Informação porque é
+    exatamente o que estou buscando agora. Em vez de estudar um mercado
+    abstrato, resolvi tratar minha própria busca de estágio como um
+    problema de dados. Cada vaga que encontrei durante a procura foi
+    registrada manualmente com as mesmas informações: tecnologias
+    exigidas, tipo de trabalho, benefícios, nicho da empresa e se a vaga me
+    interessa ou não, com o motivo quando não interessa. O resultado é uma
+    base pequena, mas real e pessoal, que posso usar pra guiar decisões
+    concretas: em quais tecnologias focar meus estudos, que tipo de vaga
+    vale mais a pena buscar e por que estou recusando as vagas que recuso.
     """
 )
 
@@ -60,7 +60,7 @@ df_bruto = carregar_dados()
 # ============================================================
 # METODOLOGIA
 # ============================================================
-with st.expander("📋 Metodologia — quais vagas entram nesta análise", expanded=False):
+with st.expander("📋 Metodologia: quais vagas entram nesta análise", expanded=False):
     total_bruto = len(df_bruto)
     total_estagio = int((df_bruto["Tipo da Vaga"] == "Estágio").sum())
     excluidas = total_bruto - total_estagio
@@ -68,22 +68,23 @@ with st.expander("📋 Metodologia — quais vagas entram nesta análise", expan
     st.markdown(
         f"""
         A base bruta tem **{total_bruto} registros**, mas nem todos são
-        vagas de **estágio** — {excluidas} são oportunidades de CLT/PJ que
+        vagas de estágio: {excluidas} são oportunidades de CLT/PJ que
         apareceram na busca e foram guardadas como referência de mercado,
-        fora do escopo principal do estudo (que é estágio). Por padrão, as
-        análises abaixo consideram só as **{total_estagio} vagas de
-        estágio**; use a opção na sidebar se quiser incluir as demais.
+        fora do escopo principal do estudo. Por padrão, as análises abaixo
+        consideram só as **{total_estagio} vagas de estágio**; use a opção
+        na sidebar se quiser incluir as demais.
 
-        Outros tratamentos aplicados aos dados antes da análise:
-        - **Padronização de categorias digitadas de forma diferente** — por
-          exemplo, "Muito longe" e "Muito Longe", ou "IA" e "Ia", eram
-          contadas como coisas diferentes até serem unificadas.
-        - **"Não divulgado" tratado como dado ausente de verdade** (não como
-          texto), pra não distorcer contagens.
-        - **Só 2 das {total_bruto} vagas divulgam salário** — por isso não
-          há um gráfico de estatística salarial: a amostra é pequena demais
-          pra qualquer média ou mediana ser confiável. Trato isso como uma
-          observação qualitativa mais adiante, não como número.
+        Antes de analisar, também tratei os dados pra evitar contagens
+        erradas:
+        - Padronizei categorias que estavam digitadas de formas diferentes,
+          como "Muito longe" e "Muito Longe", ou "IA" e "Ia", que antes
+          eram contadas como coisas separadas.
+        - Tratei "Não divulgado" como dado ausente de verdade, não como
+          texto, pra não distorcer as contagens.
+        - Só 2 das {total_bruto} vagas divulgam salário, então não incluí
+          um gráfico de estatística salarial: a amostra é pequena demais
+          pra qualquer média ou mediana ser confiável. Trato isso como
+          observação qualitativa mais adiante, na pergunta 7.
         """
     )
 
@@ -150,9 +151,10 @@ if not freq_tec.empty:
     lista_top3 = ", ".join(f"**{t}** ({n} vagas)" for t, n in top3.items())
     st.markdown(
         f"**Observação:** as tecnologias mais exigidas são {lista_top3}. "
-        f"SQL e Python aparecem tão cedo na lista que dá pra dizer que são "
-        f"praticamente pré-requisito pra estágio de TI hoje, independente "
-        f"da área da empresa — vale priorizar esses dois nos estudos."
+        f"SQL e Python aparecem cedo o suficiente na lista pra dizer que "
+        f"praticamente viraram pré-requisito de estágio em TI, "
+        f"independente da área da empresa. Vale priorizar os dois nos "
+        f"estudos."
     )
 
 st.markdown("---")
@@ -160,7 +162,7 @@ st.markdown("---")
 # ============================================================
 # 2. Tipo de trabalho e taxa de recusa
 # ============================================================
-st.subheader("2. Como se distribuem os tipos de trabalho — e presencial é mais recusado?")
+st.subheader("2. Como se distribuem os tipos de trabalho, e presencial é mais recusado?")
 col_c, col_d = st.columns(2)
 
 with col_c:
@@ -186,13 +188,32 @@ with col_d:
 if "Interessante" in df_filtrado.columns and not df_filtrado.empty and not recusa_por_tipo.empty:
     pior = recusa_por_tipo.index[0]
     pior_valor = recusa_por_tipo.iloc[0]
-    st.markdown(
-        f"**Observação:** vagas **{pior}** têm a maior taxa de recusa "
-        f"({pior_valor:.0f}%) — ou seja, o tipo de trabalho realmente pesa "
-        f"na hora de eu decidir se uma vaga me interessa, não é só a "
-        f"tecnologia exigida. Isso sugere que vale a pena filtrar buscas "
-        f"futuras priorizando híbrido/remoto, quando possível."
+
+    grupo_pior = df_filtrado[df_filtrado["Tipo de Trabalho"] == pior]
+    n_pior = len(grupo_pior)
+    recusadas_pior = int((~grupo_pior["Interessante"]).sum())
+    motivos_pior = grupo_pior[grupo_pior["Interessante"] == False]["Justificativa"].dropna()
+    motivo_dominante_pior = motivos_pior.value_counts().index[0] if not motivos_pior.empty else None
+
+    texto_obs2 = (
+        f"**Observação:** vagas do tipo **{pior}** têm a maior taxa de "
+        f"recusa nesta amostra ({pior_valor:.0f}%), mas esse número "
+        f"merece uma ressalva. São só {n_pior} vagas desse tipo entre as "
+        f"analisadas, e bastaram {recusadas_pior} recusas pra empurrar a "
+        f"porcentagem pra cima. Com uma base tão pequena, um número "
+        f"pequeno de casos muda o percentual inteiro; se uma dessas vagas "
+        f"tivesse me interessado, a taxa cairia bastante."
     )
+    if motivo_dominante_pior:
+        texto_obs2 += (
+            f" Olhando o motivo dessas recusas, a maioria foi por "
+            f"{motivo_dominante_pior.lower()}, não porque o formato de "
+            f"trabalho em si seja ruim. Continuo preferindo formatos mais "
+            f"flexíveis como híbrido e remoto na minha busca; esse número "
+            f"alto reflete mais o tamanho pequeno da amostra por tipo do "
+            f"que uma rejeição real ao modelo de trabalho."
+        )
+    st.markdown(texto_obs2)
 
 st.markdown("---")
 
@@ -218,10 +239,10 @@ if not comparativo.empty:
         tec_desequilibrio = diff.idxmax()
         st.markdown(
             f"**Observação:** **{tec_desequilibrio}** aparece bem mais nas "
-            f"vagas que **não** me interessam do que nas que interessam — "
-            f"um sinal de que, mesmo sendo uma tecnologia comum no mercado, "
-            f"ela sozinha não é o que define se uma vaga é boa pra mim; o "
-            f"tipo de trabalho e o nicho pesam mais nessa decisão."
+            f"vagas que não me interessam do que nas que interessam. É "
+            f"sinal de que, mesmo sendo comum no mercado, essa tecnologia "
+            f"sozinha não é o que decide se uma vaga é boa pra mim: o tipo "
+            f"de trabalho e o nicho pesam mais nessa escolha."
         )
 else:
     st.info("Sem dados suficientes para comparar com o filtro selecionado.")
@@ -243,13 +264,19 @@ if "Justificativa" in df_filtrado.columns:
         motivo_principal = contagem_just.index[0]
         pct_principal = contagem_just.iloc[0] / justificativas.shape[0] * 100
         st.markdown(
-            f"**Observação:** o motivo de recusa mais comum é **"
-            f"{motivo_principal.lower()}**, respondendo por "
-            f"{pct_principal:.0f}% das recusas com justificativa. É um dado "
-            f"só meu — mostra que a maior barreira não é falta de "
-            f"conhecimento técnico, é logística (horário/local), o que é "
-            f"mais fácil de contornar ampliando a busca por vagas remotas "
-            f"ou híbridas."
+            f"**Observação:** o motivo de recusa mais comum é "
+            f"{motivo_principal.lower()}, respondendo por "
+            f"{pct_principal:.0f}% das recusas com justificativa "
+            f"registrada. Isso é revelador quando junto com o gráfico "
+            f"anterior: mesmo entre vagas híbridas, que em teoria deveriam "
+            f"facilitar a rotina, o motivo de recusa continua sendo "
+            f"majoritariamente ligado a horário ou distância, não à "
+            f"tecnologia exigida. Ou seja, o problema não é achar vaga com "
+            f"o formato de trabalho certo, é achar vaga com horário e "
+            f"localização compatíveis com a minha rotina atual. Esse tipo "
+            f"de barreira só aparece porque registrei minhas próprias "
+            f"recusas; uma comparação genérica de mercado não capturaria "
+            f"isso."
         )
     else:
         st.info("Nenhuma justificativa registrada para o filtro selecionado.")
@@ -270,7 +297,7 @@ if not dist_nicho.empty:
     st.markdown(
         f"**Observação:** **{nicho_top}** é o nicho que mais aparece nas "
         f"vagas encontradas. Vale notar que boa parte das vagas de TI não "
-        f"vem só de empresas de tecnologia — setores como financeiro e "
+        f"vem só de empresas de tecnologia: setores como financeiro e "
         f"energia também têm times técnicos internos contratando "
         f"estagiários, o que amplia bastante onde vale procurar."
     )
@@ -293,10 +320,12 @@ if not freq_beneficios.empty:
 
     top_benef = freq_beneficios.index[0]
     st.markdown(
-        f"**Observação:** **{top_benef}** é o benefício mais comum entre as "
-        f"vagas — junto com Vale Transporte, forma praticamente um "
-        f"\"pacote padrão\" que se repete na maioria das ofertas, "
-        f"independente do nicho da empresa."
+        f"**Observação:** {top_benef} é o benefício mais comum entre as "
+        f"vagas, quase sempre junto de Vale Transporte. Não é o primeiro "
+        f"critério que eu olho numa vaga (prioridade minha é tecnologia e "
+        f"formato de trabalho), mas virou uma espécie de padrão implícito: "
+        f"se uma vaga não oferece isso, já fico desconfiado da proposta "
+        f"como um todo."
     )
 else:
     st.info("Nenhum benefício registrado para o filtro selecionado.")
@@ -310,13 +339,19 @@ st.subheader("7. E os salários?")
 com_salario = df_filtrado[df_filtrado["Salário"].notna()]
 st.markdown(
     f"""
-    Apenas **{len(com_salario)} de {len(df_filtrado)} vagas** divulgam o
-    valor da bolsa/salário abertamente. É uma amostra pequena demais pra
-    calcular uma média confiável — por isso não há gráfico salarial aqui.
-    Mas o próprio fato de quase nenhuma vaga divulgar isso **é** um achado:
-    o mercado de estágio em TI é pouco transparente sobre remuneração,
-    o que reforça a importância de perguntar diretamente no processo
-    seletivo em vez de assumir uma faixa com base na vaga anunciada.
+    Só {len(com_salario)} de {len(df_filtrado)} vagas divulgam o valor da
+    bolsa ou salário abertamente. É pouco demais pra calcular qualquer
+    média confiável, então não tem gráfico salarial aqui de propósito.
+
+    O que mais me incomoda nisso, e que não dá pra ver num gráfico, é que
+    quase nenhuma vaga divulga o salário, mas quase todas perguntam no
+    formulário de candidatura qual é a minha pretensão salarial. Sem
+    nenhuma referência de faixa pra se basear, fica difícil saber se estou
+    pedindo um valor razoável, alto demais ou baixo demais pro que a vaga
+    realmente oferece. Acabo respondendo praticamente no escuro, e isso
+    tanto pode me tirar de um processo (se eu pedir mais do que a empresa
+    já tinha planejado) quanto me fazer aceitar menos do que eu poderia
+    ter negociado.
     """
 )
 if not com_salario.empty:
@@ -346,22 +381,23 @@ st.markdown(
     Olhando os {len(df_filtrado)} registros analisados, três conclusões
     práticas se destacam pra minha própria busca de estágio:
 
-    1. **{top1_tec} é a base técnica mais cobrada** — reforça que continuar
-       estudando essa tecnologia (e não só ferramentas mais "chamativas"
-       como IA) tem retorno direto em quantidade de vagas elegíveis.
-    2. **A logística pesa mais do que eu esperava**: "{motivo_top.lower()}"
-       é o motivo de recusa mais frequente, à frente até de "não tenho o
-       conhecimento técnico". Isso muda a estratégia de busca: vale mais a
-       pena ampliar o raio geográfico e priorizar híbrido/remoto do que
-       só acumular mais tecnologias no currículo.
+    1. **{top1_tec} é a base técnica mais cobrada.** Reforça que continuar
+       estudando essa tecnologia, e não só ferramentas mais "chamativas"
+       como IA, tem retorno direto em quantidade de vagas elegíveis.
+    2. **A logística pesa mais do que eu esperava.** "{motivo_top}" é o
+       motivo de recusa mais frequente, à frente até de falta de
+       conhecimento técnico, e aparece mesmo em vagas híbridas. Isso muda
+       a estratégia de busca: vale mais a pena ampliar o raio geográfico e
+       priorizar horários flexíveis do que só acumular mais tecnologias no
+       currículo.
     3. **O nicho "{top1_nicho}" concentra as oportunidades**, mas empresas
-       de outros setores (financeiro, energia, logística) também têm vagas
-       técnicas reais — vale não restringir a busca só a empresas
-       "de tecnologia" no nome.
+       de outros setores, como financeiro e energia, também têm vagas
+       técnicas reais. Vale não restringir a busca só a empresas "de
+       tecnologia" no nome.
 
-    Esse estudo tem uma limitação clara: a amostra é pequena (poucas
-    dezenas de vagas) e foi coletada de forma não sistemática, ao longo da
-    minha própria busca — não é uma amostra representativa de todo o
+    Esse estudo tem uma limitação clara: a amostra é pequena, poucas
+    dezenas de vagas, e foi coletada de forma não sistemática, ao longo da
+    minha própria busca. Não é uma amostra representativa de todo o
     mercado, é um retrato da minha experiência de busca até aqui. Ainda
     assim, é dado real o suficiente pra orientar decisões concretas sobre
     onde estudar mais e onde procurar melhor.
