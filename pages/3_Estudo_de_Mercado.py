@@ -76,11 +76,8 @@ with st.expander("📋 Metodologia: quais vagas entram nesta análise", expanded
 
         Antes de analisar, também tratei os dados pra evitar contagens
         erradas:
-        - Padronizei categorias que estavam digitadas de formas diferentes,
-          como "Muito longe" e "Muito Longe", ou "IA" e "Ia", que antes
+        - Padronizei categorias que estavam digitadas de formas diferentes que antes
           eram contadas como coisas separadas.
-        - Tratei "Não divulgado" como dado ausente de verdade, não como
-          texto, pra não distorcer as contagens.
         - Só 2 das {total_bruto} vagas divulgam salário, então não incluí
           um gráfico de estatística salarial: a amostra é pequena demais
           pra qualquer média ou mediana ser confiável. Trato isso como
@@ -162,7 +159,7 @@ st.markdown("---")
 # ============================================================
 # 2. Tipo de trabalho e taxa de recusa
 # ============================================================
-st.subheader("2. Como se distribuem os tipos de trabalho, e presencial é mais recusado?")
+st.subheader("2. Como se distribuem os tipos de trabalho? Presencial é mais recusado?")
 col_c, col_d = st.columns(2)
 
 with col_c:
