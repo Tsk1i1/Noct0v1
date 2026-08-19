@@ -35,6 +35,7 @@ NORMALIZACAO_BENEFICIOS = {
     "totalpass": "TotalPass",
     "total pass": "TotalPass",
     "bolsa auxilio": "Bolsa Auxílio",
+    "bolsa auxilo": "Bolsa Auxílio",
     "bolsa auxílio": "Bolsa Auxílio",
 }
 

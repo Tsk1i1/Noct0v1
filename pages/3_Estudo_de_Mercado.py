@@ -1,4 +1,5 @@
 import sys
+import textwrap
 from pathlib import Path
 
 import pandas as pd
@@ -53,12 +54,22 @@ def formatar_reais(valor: float) -> str:
     return f"{valor:,.2f}".replace(",", "#").replace(".", ",").replace("#", ".")
 
 
+def texto_longo(bloco: str):
+    """
+    Renderiza um bloco de texto multi-linha como Markdown, removendo a
+    indentação do código-fonte Python antes de exibir. Sem isso, o
+    Markdown pode interpretar a indentação como bloco de código e quebrar
+    negritos que atravessam uma quebra de linha.
+    """
+    st.markdown(textwrap.dedent(bloco).strip())
+
+
 st.title("📊 Estudo de Mercado: Vagas de Estágio em TI")
 
 # ============================================================
 # INTRODUÇÃO
 # ============================================================
-st.markdown(
+texto_longo(
     """
     ### Por que este tema
 
@@ -86,14 +97,23 @@ with st.expander("📋 Metodologia: quais vagas entram nesta análise", expanded
     excluidas = total_bruto - total_estagio
     total_com_salario = int(df_bruto["Salário"].notna().sum())
 
-    st.markdown(
+    if excluidas > 0:
+        texto_escopo = (
+            f"A base bruta tem **{total_bruto} registros**, mas nem todos são "
+            f"vagas de estágio: {excluidas} são oportunidades de CLT/PJ que "
+            f"apareceram na busca e ficam fora do escopo principal do estudo. "
+            f"As análises abaixo consideram só as **{total_estagio} vagas de "
+            f"estágio**."
+        )
+    else:
+        texto_escopo = (
+            f"A base tem **{total_estagio} vagas de estágio** registradas "
+            f"manualmente ao longo da minha busca."
+        )
+
+    texto_longo(
         f"""
-        A base bruta tem **{total_bruto} registros**, mas nem todos são
-        vagas de estágio: {excluidas} são oportunidades de CLT/PJ que
-        apareceram na busca e foram guardadas como referência de mercado,
-        fora do escopo principal do estudo. Por padrão, as análises abaixo
-        consideram só as **{total_estagio} vagas de estágio**; use a opção
-        na sidebar se quiser incluir as demais.
+        {texto_escopo}
 
         Antes de analisar, também tratei os dados pra evitar contagens
         erradas:
@@ -109,10 +129,7 @@ with st.expander("📋 Metodologia: quais vagas entram nesta análise", expanded
         """
     )
 
-incluir_clt_pj = st.sidebar.checkbox(
-    "Incluir vagas CLT/PJ (fora do escopo de estágio)", value=False
-)
-df = df_bruto if incluir_clt_pj else df_bruto[df_bruto["Tipo da Vaga"] == "Estágio"]
+df = df_bruto[df_bruto["Tipo da Vaga"] == "Estágio"] if excluidas > 0 else df_bruto
 
 with st.sidebar:
     st.header("Filtros")
@@ -380,7 +397,7 @@ if n_salario >= 5:
         mostrar_grafico(fig_ic)
 
     media_arredondada = f"{round(media):,}".replace(",", ".")
-    st.markdown(
+    texto_longo(
         f"""
         Com {n_salario} vagas divulgando salário nesta amostra, já dá pra
         calcular algo minimamente confiável: a média é **R$
@@ -403,7 +420,7 @@ if n_salario >= 5:
         """
     )
 else:
-    st.markdown(
+    texto_longo(
         f"""
         Só {n_salario} de {len(df_filtrado)} vagas divulgam o valor da
         bolsa ou salário abertamente. É pouco demais pra calcular uma
@@ -414,7 +431,7 @@ else:
         """
     )
 
-st.markdown(
+texto_longo(
     f"""
     O que mais me incomoda nisso, e que não dá pra ver num gráfico, é que
     a maioria das vagas ainda não divulga o salário, mas quase todas
@@ -448,7 +465,7 @@ motivo_top = (
     else "—"
 )
 
-st.markdown(
+texto_longo(
     f"""
     Olhando os {len(df_filtrado)} registros analisados, três conclusões
     práticas se destacam pra minha própria busca de estágio:
