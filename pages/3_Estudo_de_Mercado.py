@@ -48,6 +48,11 @@ def mostrar_grafico(fig):
     st.plotly_chart(estilizar(fig), use_container_width=True)
 
 
+def formatar_reais(valor: float) -> str:
+    """Formata um número no padrão brasileiro (R$ 1.663,64), não no americano."""
+    return f"{valor:,.2f}".replace(",", "#").replace(".", ",").replace("#", ".")
+
+
 st.title("📊 Estudo de Mercado: Vagas de Estágio em TI")
 
 # ============================================================
@@ -374,22 +379,27 @@ if n_salario >= 5:
         fig_ic.update_layout(showlegend=False, title="Média com intervalo de confiança de 95%")
         mostrar_grafico(fig_ic)
 
+    media_arredondada = f"{round(media):,}".replace(",", ".")
     st.markdown(
         f"""
         Com {n_salario} vagas divulgando salário nesta amostra, já dá pra
         calcular algo minimamente confiável: a média é **R$
-        {media:,.2f}**, a mediana **R$ {mediana:,.2f}** e o desvio padrão
-        **R$ {desvio:,.2f}**. O intervalo de confiança de 95% vai de
-        **R$ {ic_baixo:,.2f}** a **R$ {ic_alto:,.2f}**: se eu repetisse
-        essa coleta várias vezes, esperaria que a média real do mercado
-        caísse dentro dessa faixa em 95% das vezes. É uma faixa larga
-        porque a amostra ainda é pequena (11 valores), mas já é bem mais
-        útil do que não ter nenhuma referência.
+        {formatar_reais(media)}**, a mediana **R$ {formatar_reais(mediana)}**
+        e o desvio padrão **R$ {formatar_reais(desvio)}**.
 
-        O box plot mostra que a mediana e a média estão próximas, sem
-        outlier puxando a distribuição pra um lado só, o que é um bom
-        sinal de que a média não está sendo distorcida por um valor fora
-        da curva.
+        O gráfico da direita mostra a média com uma barra de erro: essa
+        barra é o intervalo de confiança de 95%, de
+        **R$ {formatar_reais(ic_baixo)}** a **R$ {formatar_reais(ic_alto)}**.
+        Na prática, isso quer dizer que não dá pra confiar num número
+        fechado tipo "a bolsa média é R$ {media_arredondada}" com uma
+        amostra de só {n_salario} vagas; o mais honesto é dizer que a
+        média real do mercado provavelmente está nessa faixa. A faixa
+        ainda é larga porque a amostra é pequena, mas deve estreitar
+        conforme mais vagas com salário entrarem na base.
+
+        O box plot ao lado mostra a mesma amostra de outro ângulo: dá pra
+        ver que os valores estão bem próximos uns dos outros, sem nenhum
+        salário muito destoante puxando a média pra cima ou pra baixo.
         """
     )
 else:
