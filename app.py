@@ -7,7 +7,6 @@ st.set_page_config(
     layout="wide",
 )
 
-# ---------- Sidebar ----------
 with st.sidebar:
     st.title("Nicolas Mendes dos Santos")
     st.caption("Estudante de Engenharia de Software")
@@ -19,7 +18,6 @@ with st.sidebar:
     st.caption("🎨 Prefere tema escuro? Use o menu **⋮** (canto superior "
                 "direito) → **Settings** → **Theme**.")
 
-# ---------- Conteúdo ----------
 col_foto, col_texto = st.columns([1, 2], gap="large")
 
 with col_foto:

@@ -1,16 +1,10 @@
-"""
-Módulo responsável por carregar e limpar a base de dados de vagas de estágio.
-Centralizar a limpeza aqui evita repetir código nas páginas e garante que
-todo o dashboard trabalhe sempre com os dados no mesmo formato.
-"""
+"""Carrega e limpa a base de vagas de estágio para uso em todo o dashboard."""
 
 import pandas as pd
 import streamlit as st
 
 CAMINHO_BASE = "data/vagas_estagio_ti.xlsx"
 
-# Mapeia variações de escrita para um nome canônico, para não contar
-# "IA" e "Ia", ou "Html" e "HTML5", como tecnologias diferentes.
 NORMALIZACAO_TECNOLOGIAS = {
     "ia": "IA",
     "html": "HTML5",
@@ -20,15 +14,6 @@ NORMALIZACAO_TECNOLOGIAS = {
     "git": "Git",
 }
 
-
-def _normalizar_tecnologia(nome: str) -> str:
-    chave = nome.strip().lower()
-    return NORMALIZACAO_TECNOLOGIAS.get(chave, nome.strip())
-
-
-# Unifica justificativas de recusa que são a mesma coisa escrita de forma
-# diferente (ex: "Muito longe" vs "Muito Longe"), pra não fragmentar o
-# motivo real em categorias separadas no gráfico.
 NORMALIZACAO_JUSTIFICATIVA = {
     "muito longe": "Muito longe",
     "horário incompatível": "Horário incompatível",
@@ -39,137 +24,141 @@ NORMALIZACAO_JUSTIFICATIVA = {
     "não gosto de webdev.": "Não gosto da área",
 }
 
+NORMALIZACAO_BENEFICIOS = {
+    "vr": "Vale Refeição",
+    "va": "Vale Alimentação",
+    "vt": "Vale Transporte",
+    "plano de saúde": "Plano de Saúde",
+    "seguro de vida": "Seguro de Vida",
+    "wellhub": "Wellhub/Gympass",
+    "gympass": "Wellhub/Gympass",
+    "totalpass": "TotalPass",
+    "total pass": "TotalPass",
+    "bolsa auxilio": "Bolsa Auxílio",
+    "bolsa auxílio": "Bolsa Auxílio",
+}
+
+
+def _normalizar_tecnologia(nome: str) -> str:
+    return NORMALIZACAO_TECNOLOGIAS.get(nome.strip().lower(), nome.strip())
+
 
 def _normalizar_justificativa(texto: str) -> str:
     if pd.isna(texto):
         return texto
-    chave = str(texto).strip().lower()
-    return NORMALIZACAO_JUSTIFICATIVA.get(chave, str(texto).strip())
+    return NORMALIZACAO_JUSTIFICATIVA.get(str(texto).strip().lower(), str(texto).strip())
 
 
 def _normalizar_beneficio(nome: str) -> str:
-    """Agrupa grafias diferentes do mesmo benefício sob um nome único."""
     chave = nome.strip().rstrip(".").strip().lower()
-    mapa = {
-        "vr": "Vale Refeição",
-        "va": "Vale Alimentação",
-        "vt": "Vale Transporte",
-        "plano de saúde": "Plano de Saúde",
-        "seguro de vida": "Seguro de Vida",
-        "wellhub": "Wellhub/Gympass",
-        "gympass": "Wellhub/Gympass",
-        "totalpass": "TotalPass",
-        "total pass": "TotalPass",
-        "bolsa auxilio": "Bolsa Auxílio",
-        "bolsa auxílio": "Bolsa Auxílio",
-    }
-    return mapa.get(chave, nome.strip().rstrip(".").strip())
+    return NORMALIZACAO_BENEFICIOS.get(chave, nome.strip().rstrip(".").strip())
 
 
-@st.cache_data
-def carregar_dados(caminho: str = CAMINHO_BASE) -> pd.DataFrame:
-    """Lê a planilha bruta e devolve um DataFrame já tratado."""
-    df = pd.read_excel(caminho)
+def _quebrar_lista(texto: str, normalizar) -> list:
+    """Transforma um campo de texto livre separado por vírgula numa lista normalizada."""
+    itens = str(texto).split(",") if pd.notna(texto) else []
+    return [normalizar(item) for item in itens if item.strip() and item.strip().lower() != "nenhuma"]
 
-    # Remove espaços extras nos nomes das colunas (ex: "Carga Horaria " -> "Carga Horaria")
-    df.columns = [c.strip() for c in df.columns]
 
-    # Padroniza textos (remove espaços nas pontas)
+def _remover_espacos_das_colunas(df: pd.DataFrame) -> pd.DataFrame:
+    df.columns = [coluna.strip() for coluna in df.columns]
+    return df
+
+
+def _remover_espacos_dos_textos(df: pd.DataFrame) -> pd.DataFrame:
     colunas_texto = df.select_dtypes(include="object").columns
-    for col in colunas_texto:
-        df[col] = df[col].astype(str).str.strip()
+    for coluna in colunas_texto:
+        df[coluna] = df[coluna].astype(str).str.strip()
+    return df
 
-    # "Não divulgado" e variações viram valor ausente de verdade (NaN),
-    # em vez de string, para não quebrar contagens/gráficos e para
-    # deixar explícito que a informação não existe.
-    df = df.replace(
+
+def _tratar_nao_divulgado_como_ausente(df: pd.DataFrame) -> pd.DataFrame:
+    """'Não divulgado' e variações viram NaN de verdade, não texto, para não distorcer contagens."""
+    return df.replace(
         to_replace=r"(?i)^não\s*divulgad[oa]$|^nao\s*divulgad[oa]$|^nan$",
         value=pd.NA,
         regex=True,
     )
 
-    # Padroniza "Tipo de Trabalho" (Presencial / Híbrido / Remoto)
+
+def _padronizar_tipo_de_trabalho(df: pd.DataFrame) -> pd.DataFrame:
     if "Tipo de Trabalho" in df.columns:
         df["Tipo de Trabalho"] = (
-            df["Tipo de Trabalho"]
-            .str.strip()
-            .str.title()
-            .replace({"Hibrido": "Híbrido"})
+            df["Tipo de Trabalho"].str.strip().str.title().replace({"Hibrido": "Híbrido"})
         )
+    return df
 
-    # Padroniza "Interessante pra mim?" para booleano -> facilita filtros e gráficos
+
+def _converter_interesse_em_booleano(df: pd.DataFrame) -> pd.DataFrame:
     if "Interessante pra mim?" in df.columns:
         df["Interessante"] = (
-            df["Interessante pra mim?"]
-            .str.strip()
-            .str.lower()
-            .map({"sim": True, "não": False, "nao": False})
+            df["Interessante pra mim?"].str.strip().str.lower().map({"sim": True, "não": False, "nao": False})
         )
+    return df
 
-    # Quebra a coluna de tecnologias (texto livre separado por vírgula)
-    # em uma lista, para permitir contar frequência de cada tecnologia.
+
+def _extrair_lista_de_tecnologias(df: pd.DataFrame) -> pd.DataFrame:
     if "Tecnologias Obrigatórias" in df.columns:
-        df["Tecnologias_Lista"] = (
-            df["Tecnologias Obrigatórias"]
-            .fillna("")
-            .apply(
-                lambda x: [
-                    _normalizar_tecnologia(t)
-                    for t in x.split(",")
-                    if t.strip() and t.strip().lower() != "nenhuma"
-                ]
-            )
+        df["Tecnologias_Lista"] = df["Tecnologias Obrigatórias"].apply(
+            lambda x: _quebrar_lista(x, _normalizar_tecnologia)
         )
+    return df
 
-    # Unifica justificativas de recusa que descrevem o mesmo motivo mas
-    # foram digitadas de forma diferente.
+
+def _unificar_justificativas_equivalentes(df: pd.DataFrame) -> pd.DataFrame:
     if "Justificativa" in df.columns:
         df["Justificativa"] = df["Justificativa"].apply(_normalizar_justificativa)
+    return df
 
-    # Quebra a coluna de benefícios (texto livre separado por vírgula) em
-    # lista, agrupando grafias diferentes do mesmo benefício.
+
+def _extrair_lista_de_beneficios(df: pd.DataFrame) -> pd.DataFrame:
     if "Benefícios" in df.columns:
-        df["Beneficios_Lista"] = (
-            df["Benefícios"]
-            .fillna("")
-            .apply(
-                lambda x: [
-                    _normalizar_beneficio(b)
-                    for b in x.split(",")
-                    if b.strip() and b.strip().lower() != "nenhuma"
-                ]
-            )
+        df["Beneficios_Lista"] = df["Benefícios"].apply(
+            lambda x: _quebrar_lista(x, _normalizar_beneficio)
         )
+    return df
 
-    # Salário como número quando existir (facilita estatísticas descritivas)
+
+def _converter_salario_em_numero(df: pd.DataFrame) -> pd.DataFrame:
     if "Salário" in df.columns:
         df["Salário"] = pd.to_numeric(df["Salário"], errors="coerce")
+    return df
 
+
+@st.cache_data
+def carregar_dados(caminho: str = CAMINHO_BASE) -> pd.DataFrame:
+    """Lê a planilha bruta e devolve um DataFrame pronto para análise."""
+    df = pd.read_excel(caminho)
+    df = _remover_espacos_das_colunas(df)
+    df = _remover_espacos_dos_textos(df)
+    df = _tratar_nao_divulgado_como_ausente(df)
+    df = _padronizar_tipo_de_trabalho(df)
+    df = _converter_interesse_em_booleano(df)
+    df = _extrair_lista_de_tecnologias(df)
+    df = _unificar_justificativas_equivalentes(df)
+    df = _extrair_lista_de_beneficios(df)
+    df = _converter_salario_em_numero(df)
     return df
 
 
 def tecnologias_mais_frequentes(df: pd.DataFrame, apenas_interessantes: bool = False) -> pd.Series:
     """Conta a frequência de cada tecnologia exigida nas vagas."""
     base = df[df["Interessante"] == True] if apenas_interessantes else df
-    todas = base["Tecnologias_Lista"].explode().dropna()
-    return todas.value_counts()
+    return base["Tecnologias_Lista"].explode().dropna().value_counts()
 
 
 def beneficios_mais_frequentes(df: pd.DataFrame) -> pd.Series:
     """Conta a frequência de cada benefício oferecido nas vagas."""
-    todos = df["Beneficios_Lista"].explode().dropna()
-    return todos.value_counts()
+    return df["Beneficios_Lista"].explode().dropna().value_counts()
 
 
 def tecnologias_por_interesse(df: pd.DataFrame, top_n: int = 10) -> pd.DataFrame:
-    """
-    Compara a frequência de cada tecnologia entre vagas que interessam e
-    vagas que não interessam — ajuda a identificar se o que te interessa
-    pede um conjunto de tecnologias diferente do que não interessa.
-    """
-    freq_sim = tecnologias_mais_frequentes(df[df["Interessante"] == True])
-    freq_nao = tecnologias_mais_frequentes(df[df["Interessante"] == False])
-    comparativo = pd.DataFrame({"Interessa": freq_sim, "Não interessa": freq_nao}).fillna(0)
+    """Compara, lado a lado, a frequência de cada tecnologia entre vagas que interessam e as que não interessam."""
+    freq_interessa = tecnologias_mais_frequentes(df[df["Interessante"] == True])
+    freq_nao_interessa = tecnologias_mais_frequentes(df[df["Interessante"] == False])
+    comparativo = pd.DataFrame(
+        {"Interessa": freq_interessa, "Não interessa": freq_nao_interessa}
+    ).fillna(0)
     comparativo["Total"] = comparativo.sum(axis=1)
     comparativo = comparativo.sort_values("Total", ascending=False).head(top_n).drop(columns="Total")
     return comparativo.astype(int)

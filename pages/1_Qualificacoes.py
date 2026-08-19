@@ -20,7 +20,6 @@ st.markdown("---")
 st.markdown("### Projetos e Experiências")
 st.caption("GS's, Hackathons, Nanocursos e Challenges — um expander por item.")
 
-# Exemplo de item — duplique este bloco para cada GS/Hackathon/Nanocurso/Challenge
 with st.expander("🎓 TCC — Como os avanços da IA vão impactar no meio empresarial (2024)"):
     st.markdown(
         """
