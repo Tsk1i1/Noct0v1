@@ -245,8 +245,7 @@ if "Interessante" in df_filtrado.columns and not df_filtrado.empty and not recus
         texto_obs2 = (
             f"**Observação:** vagas do tipo **{pior}** têm a maior taxa de "
             f"recusa nesta amostra ({pior_valor:.0f}%, ou {recusadas_pior} "
-            f"de {n_pior} vagas). Com uma amostra desse tamanho, já dá pra "
-            f"tratar isso como um padrão real, não só ruído de poucos casos."
+            f"de {n_pior} vagas). "
         )
     if motivo_dominante_pior:
         texto_obs2 += (
@@ -404,15 +403,15 @@ if n_salario >= 5:
         mostrar_grafico(fig_ic)
  
     maiores_valores = salarios.sort_values(ascending=False).head(2)
-    maiores_txt = " e ".join(valor_simples(v) for v in maiores_valores)
+    maiores_txt = " e ".join(formatar_reais(v) for v in maiores_valores)
  
     texto_longo(
         f"""
         Com {n_salario} vagas divulgando salário, a média é
-        **{valor_simples(media)}**, a mediana **{valor_simples(mediana)}**
-        e o desvio padrão **{valor_simples(desvio)}**. O intervalo de
-        confiança de 95% vai de **{valor_simples(ic_baixo)}** a
-        **{valor_simples(ic_alto)}**: com uma amostra pequena, é mais
+        **{formatar_reais(media)}**, a mediana **{formatar_reais(mediana)}**
+        e o desvio padrão **{formatar_reais(desvio)}**. O intervalo de
+        confiança de 95% vai de **{formatar_reais(ic_baixo)}** a
+        **{formatar_reais(ic_alto)}**: com uma amostra pequena, é mais
         honesto tratar isso como uma faixa provável do que como um número
         fechado.
  
