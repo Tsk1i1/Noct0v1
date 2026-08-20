@@ -80,7 +80,7 @@ texto_longo(
     registrada manualmente com as mesmas informações: tecnologias
     exigidas, tipo de trabalho, benefícios, nicho da empresa e se a vaga me
     interessa ou não, com o motivo quando não interessa. O resultado é uma
-    base pequena, mas real e pessoal, que posso usar pra guiar decisões
+    base pequena e pessoal, que posso usar pra guiar decisões
     concretas: em quais tecnologias focar meus estudos, que tipo de vaga
     vale mais a pena buscar e por que estou recusando as vagas que recuso.
     """
@@ -117,11 +117,10 @@ with st.expander("📋 Metodologia: quais vagas entram nesta análise", expanded
 
         Antes de analisar, também tratei os dados pra evitar contagens
         erradas:
-        - Padronizei categorias que estavam digitadas de formas diferentes,
+        - Padronizei categorias que foram digitadas de formas diferentes,
           como "Muito longe" e "Muito Longe", ou "IA" e "Ia", que antes
           eram contadas como coisas separadas.
-        - Tratei "Não divulgado" como dado ausente de verdade, não como
-          texto, pra não distorcer as contagens.
+        - Tratei "Não divulgado" como dado ausente para não distorcer as contagens.
         - Só {total_com_salario} das {total_bruto} vagas divulgam salário.
           É pouco, mas já dá pra calcular média e intervalo de confiança
           com uma margem de erro honesta em vez de descartar o dado por
@@ -187,7 +186,7 @@ if not freq_tec.empty:
     lista_top3 = ", ".join(f"**{t}** ({n} vagas)" for t, n in top3.items())
     st.markdown(
         f"**Observação:** as tecnologias mais exigidas são {lista_top3}. "
-        f"SQL e Python aparecem cedo o suficiente na lista pra dizer que "
+        f"SQL e Python aparecem tanto nas listas que pra dizer que "
         f"praticamente viraram pré-requisito de estágio em TI, "
         f"independente da área da empresa. Vale priorizar os dois nos "
         f"estudos."
@@ -200,12 +199,12 @@ st.markdown("---")
 # ============================================================
 st.subheader("2. Como se distribuem os tipos de trabalho, e presencial é mais recusado?")
 col_c, col_d = st.columns(2)
-
+ 
 with col_c:
     dist_tipo = df_filtrado["Tipo de Trabalho"].value_counts()
     fig_tipo = px.pie(values=dist_tipo.values, names=dist_tipo.index, hole=0.4)
     mostrar_grafico(fig_tipo)
-
+ 
 with col_d:
     if "Interessante" in df_filtrado.columns and not df_filtrado.empty:
         recusa_por_tipo = (
@@ -220,37 +219,45 @@ with col_d:
         )
         fig_recusa.update_layout(showlegend=False, xaxis_title="", yaxis_title="% recusadas")
         mostrar_grafico(fig_recusa)
-
+ 
 if "Interessante" in df_filtrado.columns and not df_filtrado.empty and not recusa_por_tipo.empty:
     pior = recusa_por_tipo.index[0]
     pior_valor = recusa_por_tipo.iloc[0]
-
+ 
     grupo_pior = df_filtrado[df_filtrado["Tipo de Trabalho"] == pior]
     n_pior = len(grupo_pior)
     recusadas_pior = int((~grupo_pior["Interessante"]).sum())
     motivos_pior = grupo_pior[grupo_pior["Interessante"] == False]["Justificativa"].dropna()
     motivo_dominante_pior = motivos_pior.value_counts().index[0] if not motivos_pior.empty else None
-
-    texto_obs2 = (
-        f"**Observação:** vagas do tipo **{pior}** têm a maior taxa de "
-        f"recusa nesta amostra ({pior_valor:.0f}%), mas esse número "
-        f"merece uma ressalva. São só {n_pior} vagas desse tipo entre as "
-        f"analisadas, e bastaram {recusadas_pior} recusas pra empurrar a "
-        f"porcentagem pra cima. Com uma base tão pequena, um número "
-        f"pequeno de casos muda o percentual inteiro; se uma dessas vagas "
-        f"tivesse me interessado, a taxa cairia bastante."
-    )
+ 
+    AMOSTRA_PEQUENA = 15  # abaixo disso, a % por categoria pode ser instável
+ 
+    if n_pior < AMOSTRA_PEQUENA:
+        texto_obs2 = (
+            f"**Observação:** vagas do tipo **{pior}** têm a maior taxa de "
+            f"recusa nesta amostra ({pior_valor:.0f}%), mas esse número "
+            f"merece uma ressalva. São só {n_pior} vagas desse tipo entre as "
+            f"analisadas, e bastaram {recusadas_pior} recusas pra empurrar a "
+            f"porcentagem pra cima; com uma base tão pequena, um número "
+            f"pequeno de casos muda o percentual inteiro."
+        )
+    else:
+        texto_obs2 = (
+            f"**Observação:** vagas do tipo **{pior}** têm a maior taxa de "
+            f"recusa nesta amostra ({pior_valor:.0f}%, ou {recusadas_pior} "
+            f"de {n_pior} vagas). Com uma amostra desse tamanho, já dá pra "
+            f"tratar isso como um padrão real, não só ruído de poucos casos."
+        )
     if motivo_dominante_pior:
         texto_obs2 += (
             f" Olhando o motivo dessas recusas, a maioria foi por "
             f"{motivo_dominante_pior.lower()}, não porque o formato de "
-            f"trabalho em si seja ruim. Continuo preferindo formatos mais "
-            f"flexíveis como híbrido e remoto na minha busca; esse número "
-            f"alto reflete mais o tamanho pequeno da amostra por tipo do "
-            f"que uma rejeição real ao modelo de trabalho."
+            f"trabalho em si seja ruim. Isso sugere priorizar horário e "
+            f"localização compatíveis na busca, mais do que evitar esse "
+            f"tipo de trabalho por completo."
         )
     st.markdown(texto_obs2)
-
+ 
 st.markdown("---")
 
 # ============================================================
@@ -373,7 +380,7 @@ st.markdown("---")
 st.subheader("7. E os salários? Qual a média, e o quanto ela varia?")
 com_salario = df_filtrado[df_filtrado["Salário"].notna()]
 n_salario = len(com_salario)
-
+ 
 if n_salario >= 5:
     salarios = com_salario["Salário"]
     media = salarios.mean()
@@ -381,7 +388,7 @@ if n_salario >= 5:
     desvio = salarios.std(ddof=1)
     erro_padrao = desvio / (n_salario ** 0.5)
     ic_baixo, ic_alto = stats.t.interval(0.95, df=n_salario - 1, loc=media, scale=erro_padrao)
-
+ 
     col_e, col_f = st.columns(2)
     with col_e:
         fig_box = px.box(salarios, points="all", labels={"value": "Salário (R$)"})
@@ -395,28 +402,23 @@ if n_salario >= 5:
         )
         fig_ic.update_layout(showlegend=False, title="Média com intervalo de confiança de 95%")
         mostrar_grafico(fig_ic)
-
-    media_arredondada = f"{round(media):,}".replace(",", ".")
+ 
+    maiores_valores = salarios.sort_values(ascending=False).head(2)
+    maiores_txt = " e ".join(valor_simples(v) for v in maiores_valores)
+ 
     texto_longo(
         f"""
-        Com {n_salario} vagas divulgando salário nesta amostra, já dá pra
-        calcular algo minimamente confiável: a média é **R$
-        {formatar_reais(media)}**, a mediana **R$ {formatar_reais(mediana)}**
-        e o desvio padrão **R$ {formatar_reais(desvio)}**.
-
-        O gráfico da direita mostra a média com uma barra de erro: essa
-        barra é o intervalo de confiança de 95%, de
-        **R$ {formatar_reais(ic_baixo)}** a **R$ {formatar_reais(ic_alto)}**.
-        Na prática, isso quer dizer que não dá pra confiar num número
-        fechado tipo "a bolsa média é R$ {media_arredondada}" com uma
-        amostra de só {n_salario} vagas; o mais honesto é dizer que a
-        média real do mercado provavelmente está nessa faixa. A faixa
-        ainda é larga porque a amostra é pequena, mas deve estreitar
-        conforme mais vagas com salário entrarem na base.
-
-        O box plot ao lado mostra a mesma amostra de outro ângulo: dá pra
-        ver que os valores estão bem próximos uns dos outros, sem nenhum
-        salário muito destoante puxando a média pra cima ou pra baixo.
+        Com {n_salario} vagas divulgando salário, a média é
+        **{valor_simples(media)}**, a mediana **{valor_simples(mediana)}**
+        e o desvio padrão **{valor_simples(desvio)}**. O intervalo de
+        confiança de 95% vai de **{valor_simples(ic_baixo)}** a
+        **{valor_simples(ic_alto)}**: com uma amostra pequena, é mais
+        honesto tratar isso como uma faixa provável do que como um número
+        fechado.
+ 
+        O box plot mostra a mesma amostra de outro ângulo: a maioria dos
+        valores fica concentrada mais perto da mediana, com duas ofertas
+        mais altas ({maiores_txt}) puxando a média um pouco acima dela.
         """
     )
 else:
@@ -430,17 +432,13 @@ else:
         esse gráfico aparece automaticamente.
         """
     )
-
+ 
 texto_longo(
     f"""
-    O que mais me incomoda nisso, e que não dá pra ver num gráfico, é que
-    a maioria das vagas ainda não divulga o salário, mas quase todas
-    perguntam no formulário de candidatura qual é a minha pretensão
-    salarial. Antes de ter esses {n_salario} valores, eu respondia
-    praticamente no escuro. Agora pelo menos tenho uma faixa própria pra
-    me basear, mesmo que a empresa específica não divulgue nada: isso
-    tanto evita que eu peça mais do que a empresa já tinha planejado
-    quanto evita que eu aceite menos do que eu poderia ter negociado.
+    Vale a ressalva: a maioria das vagas ainda não divulga salário, então
+    essa média deve mudar conforme mais vagas com valor divulgado
+    entrarem na base. Com mais dados, a tendência é ela se aproximar cada
+    vez mais da média real do mercado.
     """
 )
 if not com_salario.empty:
@@ -449,7 +447,7 @@ if not com_salario.empty:
         use_container_width=True,
         hide_index=True,
     )
-
+ 
 st.markdown("---")
 
 # ============================================================

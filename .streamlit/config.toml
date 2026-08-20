@@ -1,8 +1,5 @@
 [theme]
-# Definir [theme.light] e [theme.dark] separadamente (em vez de só cores
-# soltas aqui) é a forma documentada de dar ao Streamlit os dois temas
-# completos — é isso que faz o alternador aparecer no menu Settings com
-# as SUAS cores, em vez das genéricas do Streamlit.
+# Definir [theme.light] e [theme.dark] 
 primaryColor = "#1a73e8"
 font = "sans serif"
 
@@ -17,7 +14,7 @@ secondaryBackgroundColor = "#1c1f26"
 textColor = "#f0f2f6"
 
 [client]
-# "auto" mostra as opções de desenvolvedor (Rerun/Clear cache) só pra quem
-# está logado como dono do app no Streamlit Cloud; qualquer outra pessoa
-# (inclusive quem for avaliar) vê o menu enxuto, mas com o Settings mantido.
+# "auto" mostra as opções de desenvolvedor  só pra quem
+# está logado como dono do app, qualquer outra pessoa
+# vê o menu enxuto, mas com o Settings mantido.
 toolbarMode = "auto"

@@ -15,8 +15,8 @@ with st.sidebar:
     st.markdown("🔗 [LinkedIn](https://linkedin.com/in/tsuk1i1)")
     st.markdown("💻 [GitHub](https://github.com/Tsk1i1)")
     st.markdown("---")
-    st.caption("🎨 Prefere tema escuro? Use o menu **⋮** (canto superior "
-                "direito) → **Settings** → **Theme**.")
+    st.caption("🎨 Prefere outro tema? Use o menu **⋮** no canto superior "
+                "direito → **Settings** → **Theme**.")
 
 col_foto, col_texto = st.columns([1, 2], gap="large")
 
@@ -25,13 +25,13 @@ with col_foto:
     if caminho_foto.exists():
         st.image(str(caminho_foto), use_container_width=True)
     else:
-        st.info("📷 Coloque sua foto em `assets/foto_perfil.jpg` para ela aparecer aqui.")
+        st.info("Minha foto aqui.")
 
 with col_texto:
     st.title("Olá, eu sou Nicolas 👋")
     st.markdown(
         """
-        Sou estudante de Engenharia de Software na FIAP e técnico em Administração pela ETEC Prof.ª Luzia Maria Machado. Meu perfil é naturalmente analítico — gosto de desmontar problemas complexos, entender suas partes e estruturar soluções que realmente façam sentido. Foi essa curiosidade que me levou, no TCC do técnico, a investigar como a Inteligência Artificial está transformando o meio empresarial e como os dados podem gerar decisões mais inteligentes.
+        Sou estudante de Engenharia de Software na FIAP e técnico em Administração pela ETEC Prof.ª Luzia Maria Machado. Meu perfil é naturalmente analítico, gosto de desmontar problemas complexos, entender suas partes e estruturar soluções que realmente façam sentido. Foi essa curiosidade que me levou, no TCC do técnico, a investigar como a Inteligência Artificial está transformando o meio empresarial e como os dados podem gerar decisões mais inteligentes.
         
         No dia a dia, programo em Java e Python, e me interesso cada vez mais pelo lado estratégico da tecnologia: como modelar informações, organizar processos e usar dados para encontrar respostas que não são óbvias à primeira vista. Gosto de pensar em arquitetura e lógica, não só em escrever código.
         

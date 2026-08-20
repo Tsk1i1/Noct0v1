@@ -49,7 +49,3 @@ with col2:
     ferramentas = ["Git/GitHub", "VS Code", "Arduino IDE", "Office", "Blender/Maya",]
     st.markdown("\n".join(f"- {f}" for f in ferramentas))
 
-st.info(
-    "💡 Edite as listas e dicionários no início de cada bloco de código para "
-    "refletir suas próprias skills, idiomas e ferramentas."
-)

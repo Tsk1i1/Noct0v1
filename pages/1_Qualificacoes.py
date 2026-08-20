@@ -18,7 +18,7 @@ st.markdown(
 
 st.markdown("---")
 st.markdown("### Projetos e Experiências")
-st.caption("GS's, Hackathons, Nanocursos e Challenges — um expander por item.")
+st.caption("GS's, Hackathons, Nanocursos e Challenges.")
 
 with st.expander("🎓 TCC — Como os avanços da IA vão impactar no meio empresarial (2024)"):
     st.markdown(
@@ -79,7 +79,3 @@ with st.expander("🎨 Design Thinking — FIAP (2025)"):
         """
     )
 
-st.info(
-    "💡 Duplique os blocos `st.expander` acima para cada projeto, hackathon, "
-    "GS, nanocurso ou challenge que você quiser listar."
-)
