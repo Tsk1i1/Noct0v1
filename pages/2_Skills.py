@@ -15,7 +15,7 @@ with col1:
         "HTML / CSS / Javascript": 0.6,
         "Arduino": 0.5,
         "SQL": 0.45,
-        # adicione/edite suas skills e o nível (0.0 a 1.0) aqui
+        
     }
     for skill, nivel in hard_skills.items():
         st.markdown(f"**{skill}**")

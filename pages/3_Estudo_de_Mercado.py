@@ -9,13 +9,13 @@ from scipy import stats
 
 # Permite importar utils/ quando a página roda dentro de pages/
 sys.path.append(str(Path(__file__).resolve().parent.parent))
-from utils.data_loader import (  # noqa: E402
+from utils.data_loader import (  
     beneficios_mais_frequentes,
     carregar_dados,
     tecnologias_mais_frequentes,
     tecnologias_por_interesse,
 )
-from utils.theme import cores_atuais  # noqa: E402
+from utils.theme import cores_atuais  
 
 st.set_page_config(page_title="Estudo de Mercado", page_icon="📊", layout="wide")
 
@@ -50,8 +50,8 @@ def mostrar_grafico(fig):
 
 
 def formatar_reais(valor: float) -> str:
-    """Formata um número no padrão brasileiro (R$ 1.663,64), não no americano."""
-    return f"{valor:,.2f}".replace(",", "#").replace(".", ",").replace("#", ".")
+    """Formata um valor em reais sem casas decimais, pra fluir melhor em texto corrido."""
+    return f"R$ {valor:,.2f}".replace(",", "#").replace(".", ",").replace("#", ".")
 
 
 def texto_longo(bloco: str):
