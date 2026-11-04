@@ -15,7 +15,7 @@
 - Trabalhar em branch de feature; não publicar, fazer push ou alterar o site online sem solicitação.
 
 ## Direção visual
-- Identidade editorial: papel claro, verde escuro, tipografia legível, bordas discretas, sem emojis decorativos.
+- Identidade editorial: branco e azul, azul profundo nos destaques, tipografia legível, bordas discretas, sem emojis decorativos.
 - Tema claro e escuro legíveis, navegação por teclado e layout utilizável em celular.
 - A apresentação profissional destaca projetos e evidências, sem percentuais subjetivos de domínio.
 

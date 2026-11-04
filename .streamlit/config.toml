@@ -1,25 +1,25 @@
 [theme]
 base = "light"
 font = "sans serif"
-primaryColor = "#21634b"
+primaryColor = "#1d4ed8"
 
 [theme.light]
-primaryColor = "#21634b"
-backgroundColor = "#f8f7f3"
-secondaryBackgroundColor = "#eeede7"
-textColor = "#242d28"
-linkColor = "#21634b"
-borderColor = "#d9ddd5"
-chartCategoricalColors = ["#21634b", "#a85d35", "#496f87", "#8a7138", "#77566f", "#607b68"]
+primaryColor = "#1d4ed8"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f1f5fc"
+textColor = "#172033"
+linkColor = "#1d4ed8"
+borderColor = "#d9e2f0"
+chartCategoricalColors = ["#3475cb", "#687f9d", "#36869e", "#8399bc", "#586dac", "#98aecb"]
 
 [theme.dark]
-primaryColor = "#39795b"
-backgroundColor = "#171d1a"
-secondaryBackgroundColor = "#222b25"
-textColor = "#edece5"
-linkColor = "#9bc9ae"
-borderColor = "#3c4940"
-chartCategoricalColors = ["#9bc9ae", "#dfa57b", "#92b9cf", "#d5c184", "#c5a2c0", "#91aa9b"]
+primaryColor = "#2563eb"
+backgroundColor = "#0b1220"
+secondaryBackgroundColor = "#142033"
+textColor = "#e8eef8"
+linkColor = "#60a5fa"
+borderColor = "#34465f"
+chartCategoricalColors = ["#60a5fa", "#a4b9d7", "#67b9d1", "#8eabdf", "#a1aee5", "#c2cfdf"]
 
 [client]
 toolbarMode = "viewer"

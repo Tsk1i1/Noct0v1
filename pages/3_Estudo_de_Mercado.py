@@ -19,7 +19,7 @@ from utils.ui import footer, page_header, setup_page
 
 setup_page("Estudo de mercado", "Estudo de mercado")
 CORES = cores_atuais()
-PALETA = ["#317366", "#8CAA9B", "#BB8D56", "#658599", "#AA7580", "#8C887C"]
+PALETA = ["#3475CB", "#687F9D", "#36869E", "#8399BC", "#586DAC", "#98AECB"]
 
 
 def mostrar_grafico(fig):
