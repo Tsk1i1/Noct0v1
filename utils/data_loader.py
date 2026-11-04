@@ -1,9 +1,11 @@
 """Carrega e limpa a base de vagas de estágio para uso em todo o dashboard."""
 
+from pathlib import Path
+
 import pandas as pd
 import streamlit as st
 
-CAMINHO_BASE = "data/vagas_estagio_ti.xlsx"
+CAMINHO_BASE = Path(__file__).resolve().parent.parent / "data" / "vagas_estagio_ti.xlsx"
 
 NORMALIZACAO_TECNOLOGIAS = {
     "ia": "IA",
@@ -67,9 +69,9 @@ def _remover_espacos_das_colunas(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def _remover_espacos_dos_textos(df: pd.DataFrame) -> pd.DataFrame:
-    colunas_texto = df.select_dtypes(include="object").columns
+    colunas_texto = df.select_dtypes(include=["object", "string"]).columns
     for coluna in colunas_texto:
-        df[coluna] = df[coluna].astype(str).str.strip()
+        df[coluna] = df[coluna].astype("string").str.strip()
     return df
 
 
@@ -93,7 +95,8 @@ def _padronizar_tipo_de_trabalho(df: pd.DataFrame) -> pd.DataFrame:
 def _converter_interesse_em_booleano(df: pd.DataFrame) -> pd.DataFrame:
     if "Interessante pra mim?" in df.columns:
         df["Interessante"] = (
-            df["Interessante pra mim?"].str.strip().str.lower().map({"sim": True, "não": False, "nao": False})
+            df["Interessante pra mim?"].str.strip().str.lower()
+            .map({"sim": True, "não": False, "nao": False}).astype("boolean")
         )
     return df
 
