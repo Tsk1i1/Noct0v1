@@ -1,20 +1,26 @@
 [theme]
-# Definir [theme.light] e [theme.dark] 
-primaryColor = "#1a73e8"
+base = "light"
 font = "sans serif"
+primaryColor = "#21634b"
 
 [theme.light]
-backgroundColor = "#ffffff"
-secondaryBackgroundColor = "#f0f4f9"
-textColor = "#202124"
+primaryColor = "#21634b"
+backgroundColor = "#f8f7f3"
+secondaryBackgroundColor = "#eeede7"
+textColor = "#242d28"
+linkColor = "#21634b"
+borderColor = "#d9ddd5"
+chartCategoricalColors = ["#21634b", "#a85d35", "#496f87", "#8a7138", "#77566f", "#607b68"]
 
 [theme.dark]
-backgroundColor = "#0e1117"
-secondaryBackgroundColor = "#1c1f26"
-textColor = "#f0f2f6"
+primaryColor = "#39795b"
+backgroundColor = "#171d1a"
+secondaryBackgroundColor = "#222b25"
+textColor = "#edece5"
+linkColor = "#9bc9ae"
+borderColor = "#3c4940"
+chartCategoricalColors = ["#9bc9ae", "#dfa57b", "#92b9cf", "#d5c184", "#c5a2c0", "#91aa9b"]
 
 [client]
-# "auto" mostra as opções de desenvolvedor  só pra quem
-# está logado como dono do app, qualquer outra pessoa
-# vê o menu enxuto, mas com o Settings mantido.
-toolbarMode = "auto"
+toolbarMode = "viewer"
+showSidebarNavigation = false

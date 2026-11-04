@@ -1,81 +1,77 @@
 import streamlit as st
 
-st.set_page_config(page_title="Qualificações", page_icon="🎓", layout="wide")
+from utils.ui import footer, page_header, setup_page, tags
 
-st.title("🎓 Minhas Qualificações")
-st.caption("Formação, cursos, certificações e experiências relevantes.")
-
-st.markdown("### Formação Acadêmica")
-st.markdown(
-    """
-    **Bacharelado em Engenharia de Software** — FIAP, Centro Universitário, São Paulo/SP
-    Cursando o 4º semestre — conclusão prevista para dezembro de 2028.
-
-    **Tecnólogo em Administração** — ETEC Prof.ª Luzia Maria Machado, Arujá/SP
-    Concluído em dezembro de 2024.
-    """
+setup_page("Qualificações", "Qualificações")
+page_header(
+    "Formação e experiência",
+    "Um percurso entre\nadministração e tecnologia.",
+    "Minha formação, os projetos em que trabalhei e os cursos que complementam meus estudos.",
 )
 
-st.markdown("---")
-st.markdown("### Projetos e Experiências")
-st.caption("GS's, Hackathons, Nanocursos e Challenges.")
+st.header("Formação acadêmica")
+col_atual, col_anterior = st.columns(2, gap="large")
 
-with st.expander("🎓 TCC — Como os avanços da IA vão impactar no meio empresarial (2024)"):
-    st.markdown(
-        """
-        **Contexto:** Projeto de Conclusão de Curso do técnico em Administração,
-        investigando os efeitos estratégicos e operacionais da adoção de
-        Inteligência Artificial em empresas.
+with col_atual, st.container(border=True, key="formacao-atual"):
+    st.caption("EM ANDAMENTO · CONCLUSÃO EM 2028")
+    st.markdown("### Engenharia de Software")
+    st.write("FIAP · São Paulo, SP")
+    st.write("Bacharelado, 4º semestre. Conclusão prevista para dezembro de 2028.")
 
-        **O que fiz:** pesquisa aprofundada sobre cenário atual e tendências
-        do uso de IA; coleta e tratamento de dados para gráficos e
-        relatórios; apresentação formal do projeto para uma banca avaliadora.
+with col_anterior, st.container(border=True, key="formacao-anterior"):
+    st.caption("CONCLUÍDO · 2024")
+    st.markdown("### Administração")
+    st.write("ETEC Prof.ª Luzia Maria Machado · Arujá, SP")
+    st.write("Curso técnico concluído em dezembro de 2024.")
 
-        **Resultado/Aprendizado:** aprendi a estruturar uma pesquisa aplicada
-        do início ao fim e a comunicar resultados técnicos para um público
-        avaliador — habilidades que uso até hoje.
+st.divider()
+st.header("Projetos e experiências")
+st.write("Pesquisa aplicada, desenvolvimento de interfaces e apresentação de resultados.")
 
-        **Tecnologias:** `Pesquisa` `Análise de Dados` `Apresentação`
-        """
+with st.expander("Conectaí · Global Solution · 2025", expanded=True):
+    st.write(
+        "Aplicação web voltada à visualização de dados históricos, "
+        "com uma experiência interativa para quem consulta os painéis."
+    )
+    st.write(
+        "Trabalhei na construção da interface com React, Vite e Tailwind CSS, "
+        "integrada a painéis em Python Dash e a um backend Node.js."
+    )
+    tags(["React", "Vite", "Tailwind CSS", "Python Dash", "Node.js"])
+
+with st.expander("Inteligência artificial no meio empresarial · TCC · 2024"):
+    st.write(
+        "No TCC do técnico em Administração, investiguei como a adoção de "
+        "inteligência artificial afeta a estratégia e a operação das empresas."
+    )
+    st.write(
+        "Pesquisei o cenário e as tendências de uso de IA, coletei e tratei "
+        "dados para gráficos e relatórios e apresentei o trabalho a uma banca. "
+        "Foi minha primeira experiência de conduzir uma pesquisa aplicada "
+        "do início à apresentação dos resultados."
+    )
+    tags(["Pesquisa", "Análise de dados", "Apresentação"])
+
+st.divider()
+st.header("Cursos complementares")
+
+col_prompt, col_design = st.columns(2, gap="large")
+with col_prompt, st.container(border=True, key="curso-prompt"):
+    st.caption("ALURA · 2025")
+    st.markdown("### Engenharia de Prompt")
+    st.write(
+        "Fundamentos de modelos de linguagem, tokens, temperatura e técnicas "
+        "como Few-Shot e Chain-of-Thought. Uso esse conteúdo para estudar "
+        "e prototipar ideias com ferramentas de IA."
     )
 
-with st.expander("🌏 Global Solution: Conectaí (2025)"):
-    st.markdown(
-        """
-        **Contexto:** Criação de uma aplicação web com foco em visualização de dados históricos e experiência interativa de usuário.
-
-        **O que fiz:** Construção da interface com React, Vite e Tailwind CSS, integrada a painéis dinâmicos desenvolvidos em Python Dash e backend Node.js
-
-        **Aplicação:** Criação de interfaces web dinamicas e funcionais.
-        """
+with col_design, st.container(border=True, key="curso-design"):
+    st.caption("FIAP · 2025")
+    st.markdown("### Design Thinking")
+    st.write(
+        "Empatia, definição do problema, ideação, prototipação e teste. "
+        "Apliquei essa abordagem para organizar este portfólio e pensar "
+        "no que quem visita precisa encontrar primeiro."
     )
 
-with st.expander("💬 Engenharia de Prompt — Alura (2025)"):
-    st.markdown(
-        """
-        **Instituição:** Alura
-
-        **Conteúdo:** fundamentos de modelos de linguagem (LLMs), o conceito
-        de *tokens* e *temperatura*, e técnicas de construção de prompts
-        como Few-Shot e Chain-of-Thought.
-
-        **Aplicação:** uso essas técnicas no dia a dia pra estudar mais
-        rápido e prototipar ideias com ferramentas de IA.
-        """
-    )
-
-with st.expander("🎨 Design Thinking — FIAP (2025)"):
-    st.markdown(
-        """
-        **Instituição:** FIAP
-
-        **Conteúdo:** metodologia de resolução de problemas centrada no
-        usuário, com etapas de empatia, definição, ideação, prototipação e
-        teste.
-
-        **Aplicação:** usei a lógica de Design Thinking pra pensar a
-        experiência de quem for avaliar este dashboard — o que essa pessoa
-        precisa ver primeiro, e como organizar as informações de forma clara.
-        """
-    )
-
+footer()

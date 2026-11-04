@@ -1,53 +1,66 @@
-import streamlit as st
 from pathlib import Path
 
-st.set_page_config(
-    page_title="Portfólio | Quem sou eu",
-    page_icon="👋",
-    layout="wide",
-)
+import streamlit as st
 
-with st.sidebar:
-    st.title("Nicolas Mendes dos Santos")
-    st.caption("Estudante de Engenharia de Software")
-    st.markdown("---")
-    st.markdown("📧 nico12571@hotmail.com")
-    st.markdown("🔗 [LinkedIn](https://linkedin.com/in/tsuk1i1)")
-    st.markdown("💻 [GitHub](https://github.com/Tsk1i1)")
-    st.markdown("---")
-    st.caption("🎨 Prefere outro tema? Use o menu **⋮** no canto superior "
-                "direito → **Settings** → **Theme**.")
+from utils.ui import footer, setup_page, tags
 
-col_foto, col_texto = st.columns([1, 2], gap="large")
+setup_page("Apresentação", "Apresentação")
 
-with col_foto:
-    caminho_foto = Path("assets/foto_perfil.jpg")
-    if caminho_foto.exists():
-        st.image(str(caminho_foto), use_container_width=True)
-    else:
-        st.info("Minha foto aqui.")
+intro, portrait = st.columns([2.1, 1], gap="large", vertical_alignment="center")
+with intro:
+    st.html('''<header class="hero">
+        <p class="eyebrow">Portfólio / Engenharia de software</p>
+        <h1>Nicolas Mendes <br>dos Santos.</h1>
+        <p class="lead">Gosto de desmontar problemas, entender suas partes e
+        estruturar soluções. Estudo Engenharia de Software na FIAP e programo em Java e Python.</p>
+        <p class="hero-role">Desenvolvimento de sistemas · Análise de dados</p>
+    </header>''')
+    st.link_button("Vamos conversar", "mailto:nico12571@hotmail.com", type="primary")
+with portrait:
+    with st.container(key="portrait"):
+        photo = Path(__file__).resolve().parent / "assets/foto_perfil.jpg"
+        if photo.exists():
+            st.image(str(photo), width="stretch")
+        st.caption("São Paulo, SP / Buscando minha primeira oportunidade de estágio")
 
-with col_texto:
-    st.title("Olá, eu sou Nicolas 👋")
-    st.markdown(
-        """
-        Sou estudante de Engenharia de Software na FIAP e técnico em Administração pela ETEC Prof.ª Luzia Maria Machado. Meu perfil é naturalmente analítico, gosto de desmontar problemas complexos, entender suas partes e estruturar soluções que realmente façam sentido. Foi essa curiosidade que me levou, no TCC do técnico, a investigar como a Inteligência Artificial está transformando o meio empresarial e como os dados podem gerar decisões mais inteligentes.
-        
-        No dia a dia, programo em Java e Python, e me interesso cada vez mais pelo lado estratégico da tecnologia: como modelar informações, organizar processos e usar dados para encontrar respostas que não são óbvias à primeira vista. Gosto de pensar em arquitetura e lógica, não só em escrever código.
-        
-        Atualmente busco minha primeira oportunidade de estágio em Engenharia de Software, com interesse especial em tecnologia, inovação e áreas que envolvam análise de dados, resolução de problemas e estruturação de sistemas. Quero aplicar o que aprendo na faculdade em desafios reais e seguir evoluindo como alguém que constrói soluções com propósito.
+st.divider()
+st.html('<div class="section-label"><h2>Projeto em destaque</h2><span>01 / DADOS</span></div>')
+with st.container(key="feature"):
+    summary, workflow = st.columns([2, 1], gap="large")
+    with summary:
+        st.caption("ESTUDO DE MERCADO")
+        st.subheader("Minha busca de estágio, vista pelos dados")
+        st.write(
+            "Registrei vagas de TI durante minha busca de estágio e analisei "
+            "tecnologias exigidas, formatos de trabalho, benefícios e salários. "
+            "O dashboard permite explorar esses dados e os motivos das minhas escolhas."
+        )
+        tags(["Python", "pandas", "Plotly", "Streamlit"])
+        st.page_link("pages/3_Estudo_de_Mercado.py", label="Explorar o estudo de mercado →")
+    with workflow:
+        st.html('''<div class="data-workflow" aria-label="Etapas do projeto">
+            <p>01<strong>Coleta</strong>Registro manual das vagas</p>
+            <p>02<strong>Tratamento</strong>Limpeza e padronização</p>
+            <p>03<strong>Análise</strong>Sete perguntas sobre a busca</p>
+        </div>''')
 
-        """
+st.html('<div class="section-label"><h2>Sobre meu percurso</h2><span>FORMAÇÃO &amp; PRÁTICA</span></div>')
+about, focus = st.columns([1.5, 1], gap="large")
+with about:
+    st.write(
+        "Sou técnico em Administração pela ETEC Prof.ª Luzia Maria Machado. "
+        "No meu TCC, pesquisei como a inteligência artificial está mudando o meio empresarial, "
+        "com coleta de dados, gráficos e apresentação dos resultados para uma banca."
     )
-
-    st.markdown("### O que você vai encontrar aqui")
-    st.markdown(
-        """
-        - 🎓 **Minhas Qualificações** — formação, projetos, hackathons e cursos.
-        - 🛠️ **Skills** — competências técnicas, ferramentas e soft skills.
-        - 📊 **Estudo de Mercado** — análise de dados sobre vagas de estágio em TI.
-        """
+    st.write(
+        "Hoje, na Engenharia de Software, me interesso por modelagem de informações, "
+        "lógica e organização de sistemas. Busco um estágio para aplicar esse aprendizado em projetos reais."
     )
+    st.page_link("pages/1_Qualificacoes.py", label="Ver formação e experiências →")
+with focus:
+    st.markdown("**O que estou desenvolvendo**")
+    st.write("Programação em Java e Python, interfaces web e projetos com Arduino.")
+    tags(["Desenvolvimento", "Dados", "Sistemas embarcados"])
+    st.page_link("pages/2_Skills.py", label="Conhecer minhas competências →")
 
-st.markdown("---")
-st.caption("Dashboard desenvolvido para o Checkpoint de Data Science and Statistical Computing.")
+footer()
